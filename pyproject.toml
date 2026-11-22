@@ -1,0 +1,23 @@
+[project]
+name = "llm-langraph-basics"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "saurabh", email = "saurabh.1.saurabh@motive.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "langchain-groq>=1.2.1",
+    "langgraph>=1.2.22",
+    "langgraph-checkpoint-sqlite>=3.1.3",
+    "streamlit>=1.67.0",
+]
+
+[project.scripts]
+llm-langraph-basics = "llm_langraph_basics:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
