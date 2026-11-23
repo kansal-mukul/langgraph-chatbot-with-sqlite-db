@@ -10,7 +10,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
 from langchain_core.tools import tool
-
+from langchain_tavily import TavilySearch
 from dotenv import load_dotenv
 import sqlite3
 import requests
@@ -29,7 +29,7 @@ llm = ChatGroq(model="qwen/qwen3.8-27b", temperature=0)
 # Configure and wrap the Wikipedia tool
 api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=500)
 wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
-
+tavily_tool = TavilySearch(max_results=3)
 
 @tool
 def calculator(first_num: float, second_num: float, operation: str) -> dict:
@@ -55,7 +55,7 @@ def calculator(first_num: float, second_num: float, operation: str) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-tools = [wiki_tool, calculator]
+tools = [wiki_tool, calculator,tavily_tool]
 llm_with_tools = llm.bind_tools(tools)
 
 # -------------------
