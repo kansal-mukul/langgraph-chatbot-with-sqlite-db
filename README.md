@@ -52,9 +52,23 @@ uv run streamlit run streamlit_frontend_threading.py
 
 # SQLite-backed checkpointing that persists conversations
 uv run streamlit run streamlit_frontend_database.py
+
+# Tool-calling chat with Wikipedia and calculator
+uv run streamlit run streamlit_frontend_tool.py
 ```
 
 Streamlit opens the selected app in your browser. The database-backed version stores LangGraph checkpoints in `chatbot.db` in the project directory, so conversations can be retrieved after restarting the app. The other chat backends use an in-memory checkpointer, so their checkpointed conversations are lost when the process stops.
+
+#### Tool-calling chat
+
+Run `uv run streamlit run streamlit_frontend_tool.py` to start the tool-calling app. The assistant can use the Wikipedia and calculator tools. The tool activity panel shows each call's name, arguments, and result; tool errors are shown in the panel as well.
+
+Try prompts such as:
+
+- “Use Wikipedia to give me a short overview of LangGraph.”
+- “Use the calculator to multiply 345 by 757575.”
+
+The current backend registers Wikipedia and calculator. Although `ddgs` is a project dependency, DuckDuckGo search is not currently registered as a tool.
 
 #### SQLite-backed chat output
 
