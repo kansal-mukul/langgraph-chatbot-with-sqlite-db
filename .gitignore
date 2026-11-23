@@ -1,2 +1,6 @@
 .env
 __pycache__/
+.langgraph_api/
+database/*.db-shm
+database/*.db-wal
+database/*.db-journal

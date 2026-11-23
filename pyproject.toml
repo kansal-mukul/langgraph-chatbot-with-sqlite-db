@@ -21,9 +21,10 @@ dependencies = [
     "wikipedia>=1.4.0",
 ]
 
-[project.scripts]
-llm-langraph-basics = "llm_langraph_basics:main"
+[dependency-groups]
+dev = [
+    "langgraph-cli[inmem]>=0.4.43",
+]
 
-[build-system]
-requires = ["uv_build>=0.13.5,<0.14.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false

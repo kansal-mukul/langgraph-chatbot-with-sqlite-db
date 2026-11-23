@@ -5,6 +5,7 @@ from langchain_groq import ChatGroq
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.message import add_messages
 from dotenv import load_dotenv
+from backend.database import CHATBOT_DATABASE_PATH
 import sqlite3
 
 load_dotenv()
@@ -19,7 +20,7 @@ def chat_node(state: ChatState):
     response = llm.invoke(messages)
     return {"messages": [response]}
 
-conn = sqlite3.connect(database='chatbot.db', check_same_thread=False)
+conn = sqlite3.connect(database=CHATBOT_DATABASE_PATH, check_same_thread=False)
 # Checkpointer
 checkpointer = SqliteSaver(conn=conn)
 

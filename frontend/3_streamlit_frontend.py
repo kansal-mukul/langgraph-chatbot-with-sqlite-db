@@ -1,5 +1,9 @@
+import _project_bootstrap
+
+_project_bootstrap.add_project_root()
+
 import streamlit as st
-from langgraph_backend import chatbot
+from backend.langgraph_backend import chatbot
 from langchain_core.messages import HumanMessage
 
 # st.session_state -> dict -> 

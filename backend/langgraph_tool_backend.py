@@ -12,6 +12,7 @@ from langchain_community.utilities import WikipediaAPIWrapper
 from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
 from dotenv import load_dotenv
+from backend.database import CHATBOT_DATABASE_PATH
 import asyncio
 from langchain_mcp_adapters.client import MultiServerMCPClient
 import sqlite3
@@ -68,7 +69,7 @@ def calculator(first_num: float, second_num: float, operation: str) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-tools = [mcp_tools, wiki_tool, calculator,tavily_tool]
+tools = [*mcp_tools, wiki_tool, calculator, tavily_tool]
 llm_with_tools = llm.bind_tools(tools)
 
 # -------------------
@@ -91,7 +92,7 @@ tool_node = ToolNode(tools, handle_tool_errors=True)
 # -------------------
 # 5. Checkpointer
 # -------------------
-conn = sqlite3.connect(database="chatbot.db", check_same_thread=False)
+conn = sqlite3.connect(database=CHATBOT_DATABASE_PATH, check_same_thread=False)
 checkpointer = SqliteSaver(conn=conn)
 
 # -------------------
