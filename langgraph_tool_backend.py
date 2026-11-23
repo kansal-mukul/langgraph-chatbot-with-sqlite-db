@@ -12,11 +12,24 @@ from langchain_community.utilities import WikipediaAPIWrapper
 from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
 from dotenv import load_dotenv
+import asyncio
+from langchain_mcp_adapters.client import MultiServerMCPClient
 import sqlite3
 import requests
 
 load_dotenv()
 
+async def load_sanitizer_tools():
+    client = MultiServerMCPClient({
+        "sanitizer": {
+            "transport": "sse",
+            "url": "https://mcp-security-sanitizer-server.onrender.com/sse",
+        }
+    })
+    return await client.get_tools()
+
+
+mcp_tools = asyncio.run(load_sanitizer_tools())
 # -------------------
 # 1. LLM
 # -------------------
@@ -55,7 +68,7 @@ def calculator(first_num: float, second_num: float, operation: str) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-tools = [wiki_tool, calculator,tavily_tool]
+tools = [mcp_tools, wiki_tool, calculator,tavily_tool]
 llm_with_tools = llm.bind_tools(tools)
 
 # -------------------

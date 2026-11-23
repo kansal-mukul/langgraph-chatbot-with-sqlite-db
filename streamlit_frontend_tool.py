@@ -2,6 +2,7 @@ import streamlit as st
 from langgraph_tool_backend import chatbot, retrieve_all_threads
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 import uuid
+import asyncio
 
 # =========================== Utilities ===========================
 def generate_thread_id():
@@ -79,7 +80,7 @@ if user_input:
         tool_activity = {"events": [], "has_error": False}
 
         def ai_only_stream():
-            for stream_mode, chunk in chatbot.stream(
+            async for stream_mode, chunk in chatbot.stream(
                 {"messages": [HumanMessage(content=user_input)]},
                 config=CONFIG,
                 stream_mode=["messages", "updates"],

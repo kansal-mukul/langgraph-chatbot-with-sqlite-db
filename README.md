@@ -7,6 +7,7 @@ This repository contains small examples that build on one another to demonstrate
 - Python 3.13 or later
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - A Groq API key to run the chat examples
+- A Tavily API key to use real-time web search in the tool-calling app
 
 ## Set up
 
@@ -16,10 +17,11 @@ Open PowerShell in the project directory and install the dependencies:
 uv sync
 ```
 
-The chat backends read `GROQ_API_KEY` from the environment. For local development, create a `.env` file in the project directory:
+The chat backends read API keys from the environment. For local development, create a `.env` file in the project directory:
 
 ```text
 GROQ_API_KEY=your_groq_api_key
+TAVILY_API_KEY=tvly-your_tavily_api_key
 ```
 
 Keep your API key private. Do not commit `.env` or local chat database files.
@@ -53,7 +55,7 @@ uv run streamlit run streamlit_frontend_threading.py
 # SQLite-backed checkpointing that persists conversations
 uv run streamlit run streamlit_frontend_database.py
 
-# Tool-calling chat with Wikipedia and calculator
+# Tool-calling chat with Wikipedia, Tavily, and calculator
 uv run streamlit run streamlit_frontend_tool.py
 ```
 
@@ -61,14 +63,21 @@ Streamlit opens the selected app in your browser. The database-backed version st
 
 #### Tool-calling chat
 
-Run `uv run streamlit run streamlit_frontend_tool.py` to start the tool-calling app. The assistant can use the Wikipedia and calculator tools. The tool activity panel shows each call's name, arguments, and result; tool errors are shown in the panel as well.
+Run `uv run streamlit run streamlit_frontend_tool.py` to start the tool-calling app. The assistant can use Wikipedia, Tavily, and the calculator tools. The tool activity panel shows each call's name, arguments, and result; tool errors are shown in the panel as well.
 
 Try prompts such as:
 
 - “Use Wikipedia to give me a short overview of LangGraph.”
 - “Use the calculator to multiply 345 by 757575.”
+- “Search the web for the latest LangGraph release news.”
 
-The current backend registers Wikipedia and calculator. Although `ddgs` is a project dependency, DuckDuckGo search is not currently registered as a tool.
+The tool backend registers three tools:
+
+- Wikipedia for concise encyclopedia lookup.
+- Tavily for real-time web search.
+- Calculator for addition, subtraction, multiplication, and division.
+
+Tavily requires `TAVILY_API_KEY`. The Streamlit UI shows tool calls and their results in a status panel, including tool errors.
 
 #### SQLite-backed chat output
 
@@ -86,9 +95,11 @@ Example app output:
 
 - `langgraph_backend.py` defines the chat graph and uses an in-memory checkpointer.
 - `langgraph_database_backend.py` defines the chat graph with `SqliteSaver` and provides a helper to retrieve saved conversation thread IDs.
+- `langgraph_tool_backend.py` defines the SQLite-backed tool graph with Wikipedia, Tavily, and calculator tools.
 - `3_streamlit_frontend.py` provides the basic Streamlit chat UI.
 - `streamlit_frontend_streaming.py` streams assistant output to the UI.
 - `streamlit_frontend_threading.py` lets you create and switch between conversation threads while the app is running.
 - `streamlit_frontend_database.py` uses the SQLite-backed graph to load and continue saved threads.
+- `streamlit_frontend_tool.py` provides SQLite conversation persistence plus visible tool-call activity.
 
 All chat examples use the Groq model configured in the backend. The SQLite database is local application data; avoid committing it if it contains conversation content.
